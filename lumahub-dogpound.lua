@@ -1,4 +1,4 @@
--- i got thge bang script from invinite yield so credits to infiniteyield
+-- i got the bang script from infinite yield so credits to infinite yield
 local url = "https://p19-comment-sign-sg.tiktokcdn.com/tos-alisg-i-zt8igodiya-sg/df667e20e84643759dd9ca98a21af1ff~tplv-jj85edgx6n-image-medium.jpeg?dr=8569&refresh_token=51c4b55c&x-expires=1781794800&x-signature=suxL1B5DHdAzoSFA7W4Ajkk9dVs%3D&t=67a6c45e&ps=a0626fcd&shp=ff37627b&shcp=ff37627b&idc=my"
 local _, result = pcall(function()
 	writefile("dogpound.png", game:HttpGet(url))
@@ -8,22 +8,19 @@ dp = getcustomasset("dogpound.png")
 local RunService = game:GetService("RunService")
 local Players = game:GetService("Players")
 local BangSpeed = 3 -- default speed
--- Root finder (fixed name)
+
 function getRoot(chr)
 	local hum = chr and chr:FindFirstChildWhichIsA("Humanoid")
 	return hum and hum.RootPart
 end
 
--- Torso finder (added because your script used it)
 function getTorso(chr)
-	return chr:FindFirstChild("HumanoidRootPart")
-		or chr:FindFirstChild("Torso")
+	return chr and (chr:FindFirstChild("HumanoidRootPart") or chr:FindFirstChild("Torso"))
 end
 
--- Player finder (fixed indexing)
-function getPlayer(name, speaker)
+function getPlayer(name)
 	local list = {}
-	for _, plr in pairs(speaker:GetPlayers()) do
+	for _, plr in pairs(Players:GetPlayers()) do
 		if string.sub(string.lower(plr.Name), 1, #name) == string.lower(name) then
 			table.insert(list, plr)
 		end
@@ -31,30 +28,24 @@ function getPlayer(name, speaker)
 	return list
 end
 
--- R15 checker (you referenced r15() but never defined it)
 function r15(player)
 	local hum = player.Character and player.Character:FindFirstChildWhichIsA("Humanoid")
 	return hum and hum.RigType == Enum.HumanoidRigType.R15
 end
 
--- Main Bang function (mixed + fixed)
 function Bang(speaker, args)
 	local char = speaker.Character
 	local hum = char and char:FindFirstChildWhichIsA("Humanoid")
 	if not hum then return end
 
 	local anim = Instance.new("Animation")
-	anim.AnimationId = r15(speaker)
-		and "rbxassetid://5918726674"
-		or "rbxassetid://148840371"
+	anim.AnimationId = r15(speaker) and "rbxassetid://5918726674" or "rbxassetid://148840371"
 
 	local track = hum:LoadAnimation(anim)
 	track:Play(0.1, 1, 1)
-	track:AdjustSpeed(args[2] or 3)
+	track:AdjustSpeed(args[2] or BangSpeed)
 
-	local diedConn
-	local loopConn
-
+	local diedConn, loopConn
 	diedConn = hum.Died:Connect(function()
 		track:Stop()
 		anim:Destroy()
@@ -62,20 +53,15 @@ function Bang(speaker, args)
 		if loopConn then loopConn:Disconnect() end
 	end)
 
-	-- If args[1] exists, follow players
 	if args[1] then
-		local targets = getPlayer(args[1], speaker)
-
+		local targets = getPlayer(args[1])
 		for _, plr in pairs(targets) do
-			local targetName = plr.Name
 			local offset = CFrame.new(0, 0, 1.1)
-
 			loopConn = RunService.Stepped:Connect(function()
 				pcall(function()
-					local targetChar = Players[targetName].Character
+					local targetChar = plr.Character
 					local targetRoot = getTorso(targetChar)
 					local myRoot = getRoot(char)
-
 					if targetRoot and myRoot then
 						myRoot.CFrame = targetRoot.CFrame * offset
 					end
@@ -359,9 +345,14 @@ local Input = troll:CreateInput({
 			end
 		end
 
-		if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+		if targetPlayer 
+			and targetPlayer.Character 
+			and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
 			Bang(player, {targetPlayer.Name, BangSpeed})
+		else
+			warn("No valid target found for Bang")
 		end
+
 	end,
 })
 local wenleash = Window:CreateTab("when leashed", 4483362458)
@@ -381,7 +372,7 @@ wenleash:CreateButton({
 wenleash:CreateButton({
 	Name = "humanoidrootpart clear children method",
 	Callback = function ()
-		print("deleting children...h")
+		print("it will fling you very high and try to break the leash")
 		local player = game:GetService("Players").LocalPlayer
 		local character = player.Character or player.CharacterAdded:Wait()
 		local root = character:WaitForChild("HumanoidRootPart")
@@ -401,3 +392,4 @@ local Slider = BangTab:CreateSlider({
 		BangSpeed = Value
 	end,
 })
+
