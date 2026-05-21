@@ -3,6 +3,66 @@ local url = "https://p19-comment-sign-sg.tiktokcdn.com/tos-alisg-i-zt8igodiya-sg
 local _, result = pcall(function()
 	writefile("dogpound.png", game:HttpGet(url))
 end)
+function ESP()
+for i,v in pairs(game.Players:GetPlayers()) do
+		if v ~= game.Players.LocalPlayer then
+			local char = v.Character
+			if char then
+				 local team = v.TeamColor
+			
+				local hh = Instance.new("Highlight")
+				hh.Parent = char
+				hh.FillColor = team.Color 
+				hh.FillTransparency = 0.5
+				hh.OutlineTransparency = 0
+				hh.OutlineColor = Color3.new(1, 0, 0)
+				hh.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+				hh.Adornee = char
+				hh.Enabled = true
+			end
+		end
+	end
+end
+function RandomString(s)
+	local letters = "abcdefghijklmnopqrstuvwxyz0123456789"
+	local result = ""
+	for i = 1, s or 10 do
+		local rand = math.random(1, #letters)
+		result = result .. letters:sub(rand, rand)
+	end
+	return result
+end
+local LocalPlayer = game:GetService("Players").LocalPlayer
+local char = LocalPlayer.Character
+local cachedPrompts = {}
+local function updatePromptCache()
+	cachedPrompts = {}
+	for _, v in pairs(game:GetDescendants()) do
+		if v:IsA("ProximityPrompt") then table.insert(cachedPrompts, v) end
+	end
+end
+updatePromptCache()
+local function fireNearby(range)
+	local char = LocalPlayer.Character
+	if char and char:FindFirstChild("HumanoidRootPart") then
+		local rootPos = char.HumanoidRootPart.Position
+		for i = #cachedPrompts, 1, -1 do
+			local v = cachedPrompts[i]
+			if v and v.Parent then
+				local parent = v.Parent
+				local pos = parent:IsA("BasePart") and parent.Position or (parent:IsA("Model") and parent:GetPivot().Position)
+				if pos and (rootPos - pos).Magnitude <= (range or 15) then
+					fireproximityprompt(v)
+				end
+			else
+				table.remove(cachedPrompts, i)
+			end
+		end
+	end
+end
+function muzzle_nearby()
+	fireNearby(15)
+end
 local getcustomasset = getcustomasset or getsynasset
 dp = getcustomasset("dogpound.png")
 local RunService = game:GetService("RunService")
@@ -39,6 +99,7 @@ function Bang(speaker, args)
 	if not hum then return end
 
 	local anim = Instance.new("Animation")
+	anim.Name =  RandomString(10)
 	anim.AnimationId = r15(speaker) and "rbxassetid://5918726674" or "rbxassetid://148840371"
 
 	local track = hum:LoadAnimation(anim)
@@ -77,7 +138,40 @@ isnetted = newcclosure(function(part) -- Needs to be a basepart
 end)
 local Players = game:GetService("Players")
 local rs = game:GetService("RunService")
+spawn(function ()
+	rs.Heartbeat:Connect(function ()
+		local LocalPlayer = game:GetService("Players").LocalPlayer
+		sethiddenproperty(LocalPlayer, "SimulationRadius", math.huge)
+	end)
+end)
+function move(p)
+	local player = game.Players:FindFirstChild(p)
+	if player == game.Players.LocalPlayer then return end
+	local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
 
+	if not hrp then
+		warn("HumanoidRootPart not found!")
+		return
+	end
+
+	for _, obj in pairs(workspace:GetDescendants()) do
+		if obj:IsA("BasePart") and obj.Anchored == false  and not obj.Parent:FindFirstChild("Humanoid") then
+			obj.CustomPhysicalProperties = PhysicalProperties.new(0, 0, 0, 0, 0)
+			-- Disable collisions to prevent flinging
+			obj.CanCollide = false
+			obj.AssemblyAngularVelocity = Vector3.new(99999,99999999,99999999999)
+
+			-- Create BodyVelocity to move part toward HRP
+			local bv = Instance.new("BodyVelocity")
+			bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
+			bv.Velocity = (hrp.Position - obj.Position).Unit * 50
+			bv.Parent = obj
+
+			-- Cleanup BodyVelocity after 2 seconds
+			game:GetService("Debris"):AddItem(bv, 2)
+		end
+	end
+end
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
@@ -85,8 +179,8 @@ local Window = Rayfield:CreateWindow({
 	Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
 	LoadingTitle = "by luma",
 	LoadingSubtitle = "dog pound",
-	ShowText = "Rayfield", -- for mobile users to unhide Rayfield, change if you'd like
-	Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+	ShowText = "Luma hub", -- for mobile users to unhide Rayfield, change if you'd like
+	Theme = "Amethyst", -- Check https://docs.sirius.menu/rayfield/configuration/themes
 
 	ToggleUIKeybind = "K", -- The keybind to toggle the UI visibility (string like "K" or Enum.KeyCode)
 
@@ -150,7 +244,8 @@ Tab:CreateButton({
 })
 
 local InfoTab = Window:CreateTab("Credits", 4483362458)
-InfoTab:CreateLabel("credits to heckman900 for some functions")
+InfoTab:CreateLabel("credits to heckman900 for some functions and to enadla2")
+InfoTab:CreateLabel("and enadla2 for the get some needles function (i added a new needle)")
 InfoTab:CreateButton({
 	Name = "Copy heckman900's Channel Link",
 	Callback = function() setclipboard("https://www.youtube.com/@heckman900") end,
@@ -159,6 +254,11 @@ InfoTab:CreateButton({
 	Name = "Copy luma's Channel Link",
 	Callback = function() setclipboard("https://www.youtube.com/@ADSKER-BHU-FAN") end,
 })
+InfoTab:CreateButton({
+	Name = "Copy enadla2's scriptblox Link",
+	Callback = function() setclipboard("https://scriptblox.com/u/enadla2") end,
+})
+
 local Tabcool = Window:CreateTab("cool", 4483362458) -- Title, Image
 local Toggle = Tabcool:CreateToggle({
 	Name = "Toggle noclip",
@@ -166,7 +266,7 @@ local Toggle = Tabcool:CreateToggle({
 	Flag = "Toggle1", -- A flag is the identifier for the configuration file; make sure every element has a different flag if you're using configuration saving to ensure no overlaps
 	Callback = function(Value)
 		local jhf = Value
-		while jhf == true do
+		while jhf and task.wait() do
 			local lp = game.Players.LocalPlayer
 			local char = lp.Character or lp.CharacterAdded:Wait()
 			for i,p in pairs(char:GetChildren()) do
@@ -174,8 +274,8 @@ local Toggle = Tabcool:CreateToggle({
 					p.CanCollide = false
 				end
 			end
-			
-			
+
+
 			if jhf == false then
 				for i,p in pairs(char:GetChildren()) do
 					if p:IsA("BasePart") then
@@ -185,10 +285,10 @@ local Toggle = Tabcool:CreateToggle({
 						end
 					end
 				end
-				task.wait(0.1)
+				
 				break
 			end
-			task.wait(0.01)
+			
 		end
 	end,
 })
@@ -238,7 +338,7 @@ function fakesaizure()
 	local character = player.Character or player.CharacterAdded:Wait()
 	local root = character:WaitForChild("HumanoidRootPart")
 	local hum = character:WaitForChild("Humanoid")
-	
+
 	local bv = Instance.new("BodyVelocity",root)
 	spawn(function ()
 		while root and wait(0.1) do
@@ -254,7 +354,55 @@ Tabcool:CreateButton({
 		fakesaizure()
 	end,
 })
-
+Tabcool:CreateButton({
+	Name = "esp",
+	Callback = function ()
+		ESP() --k
+	end,
+})
+Tabcool:CreateButton({
+	Name = "Auto Collect Items",
+	Callback = function()
+		local LocalPlayer = game:GetService("Players").LocalPlayer
+		
+		if char and char:FindFirstChild("HumanoidRootPart") then
+			local root = char.HumanoidRootPart
+			root.CFrame = CFrame.new(-61.264, 13.620, 158.479)
+			local s1 = tick() while tick() - s1 < 2 do fireNearby(25) task.wait(0.1) end
+			root.CFrame = CFrame.new(-57.490, 13.538, 124.575)
+			local s2 = tick() while tick() - s2 < 2 do fireNearby(25) task.wait(0.1) end
+			print("done")
+		end
+	end,
+})
+local Tle = Tabcool:CreateToggle({
+	Name = "Toggle cantouch",
+	CurrentValue = false,
+	Flag = "Toggle3", -- A flag is the identifier for the configuration file; make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(Value)
+		local euh = Value
+			while euh and task.wait() do
+			local LP = game.Players.LocalPlayer
+			for _, part in ipairs(LP.Character:GetDescendants()) do
+				if part:IsA("BasePart") then
+					part.CanTouch = not euh
+					part.CanQuery = not euh
+				end
+			end
+		end
+	end,
+})
+local erwetwete = Tabcool:CreateToggle({
+	Name = "muzzle nearby toggle",
+	CurrentValue = false,
+	Flag = "Toggle4", -- A flag is the identifier for the configuration file; make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(Value)
+		local euh = Value
+		while euh and task.wait() do
+			muzzle_nearby()
+		end
+	end,
+})
 Tabcool:CreateButton({
 	Name = "get some syringes",
 	Callback = function()
@@ -265,7 +413,8 @@ Tabcool:CreateButton({
 		local prompts = {
 			workspace.Map.Vets.Important.GrowNeedleModel.ColorNeedleMain.ProximityPrompt,
 			workspace.Map.Vets.Important.FireNeedleModel.ColorNeedleMain.ProximityPrompt,
-			workspace.Map.Vets.Important.ShrinkNeedleModel.ColorNeedleMain.ProximityPrompt
+			workspace.Map.Vets.Important.ShrinkNeedleModel.ColorNeedleMain.ProximityPrompt,
+			workspace.Map.Vets.Important.EyeNeedleModel.ColorNeedleMain.ProximityPrompt
 		}
 
 		for _, prompt in ipairs(prompts) do
@@ -296,6 +445,20 @@ local Slider = Tabcool:CreateSlider({
 		hum.WalkSpeed = Value
 	end,
 })
+local ssssss = Tabcool:CreateSlider({
+	Name = "JumpPower",
+	Range = {0, 100},
+	Increment = 10,
+	Suffix = "Jumppower",
+	CurrentValue = 10,
+	Flag = "Slider1", -- A flag is the identifier for the configuration file; make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+	Callback = function(Value)
+		local lp = game:GetService("Players").LocalPlayer
+		local char = lp.Character or lp.CharacterAdded:Wait()
+		local hum = char:WaitForChild("Humanoid")
+		hum.JumpPower = Value
+	end,
+})
 local Inpt = Tab:CreateInput({
 	Name = "tp to plr",
 	CurrentValue = "",
@@ -323,6 +486,81 @@ local Inpt = Tab:CreateInput({
 	end,
 })
 local troll = Window:CreateTab("trolling", 4483362458)
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local root = character:WaitForChild("HumanoidRootPart")
+
+-- Teleport to a player's HumanoidRootPart
+local function tptoplr(playerhrp)
+	if playerhrp then
+		root.CFrame = playerhrp.CFrame
+	end
+end
+
+-- Teleport to a random player (not yourself)
+local function tpRandom()
+	local allPlayers = Players:GetPlayers()
+	if #allPlayers > 1 then
+		local randomIndex
+		repeat
+			randomIndex = math.random(1, #allPlayers)
+		until allPlayers[randomIndex] ~= LocalPlayer
+
+		local target = allPlayers[randomIndex]
+		if target.Character and target.Character:FindFirstChild("HumanoidRootPart") then
+			tptoplr(target.Character.HumanoidRootPart)
+		end
+	end
+end
+
+-- Rayfield toggle
+
+local Toggle = Tabcool:CreateToggle({
+	Name = "Teleport to random players to attack them",
+	CurrentValue = false,
+	Flag = "ToggleTeleport",
+	Callback = function(Value)
+		local active = Value
+		task.spawn(function()
+			while active and task.wait(0.1) do
+				tpRandom()
+			end
+		end)
+	end,
+})
+
+local Input = troll:CreateInput({
+	Name = "fling player with unanchored parts",
+	CurrentValue = "",
+	PlaceholderText = "input a player's name here... (can be shortended)",
+	RemoveTextAfterFocusLost = false,
+	Flag = "Input2",
+	Callback = function(Text)
+		local player = game:GetService("Players").LocalPlayer
+		local character = player.Character or player.CharacterAdded:Wait()
+		local root = character:WaitForChild("HumanoidRootPart")
+
+		-- Search for a player whose name starts with or contains the input
+		local targetPlayer
+		for _, ply in ipairs(game:GetService("Players"):GetPlayers()) do
+			if string.lower(ply.Name):sub(1, #Text) == string.lower(Text) 
+				or string.find(string.lower(ply.Name), string.lower(Text)) then
+				targetPlayer = ply
+				break
+			end
+		end
+
+		if targetPlayer 
+			and targetPlayer.Character 
+			and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+			move(targetPlayer.Name)
+		else
+			warn("No valid target found for fling")
+		end
+
+	end,
+})
 
 local Input = troll:CreateInput({
 	Name = "bang player",
@@ -369,6 +607,7 @@ wenleash:CreateButton({
 		bodyvel.Velocity = Vector3.new(0,100000,0)
 	end,
 })
+-- https://p16-common-sign.tiktokcdn.com/tos-alisg-avt-0068/2eaeaed6870abb0643cfac98bbe84fce~tplv-tiktokx-cropcenter:1080:1080.jpeg?dr=14579&refresh_token=a2b67698&x-expires=1779404400&x-signature=5NnvghUD7k0RE%2FYmkXIllqAW%2FCA%3D&t=4d5b0474&ps=13740610&shp=a5d48078&shcp=81f88b70&idc=my2
 wenleash:CreateButton({
 	Name = "humanoidrootpart clear children method",
 	Callback = function ()
@@ -392,4 +631,3 @@ local Slider = BangTab:CreateSlider({
 		BangSpeed = Value
 	end,
 })
-
