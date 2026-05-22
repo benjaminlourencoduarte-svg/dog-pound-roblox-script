@@ -3,6 +3,37 @@ local url = "https://p19-comment-sign-sg.tiktokcdn.com/tos-alisg-i-zt8igodiya-sg
 local _, result = pcall(function()
 	writefile("dogpound.png", game:HttpGet(url))
 end)
+local ic= {}
+function ic.antisit()
+local hum = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid")
+	hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+end
+
+function ic.desync()
+	local  lp = game:GetService("Players").LocalPlayer.Character
+	local ds = lp:Clone()
+	ds.HumanoidRootPart.Anchored = false
+	ds.Parent = workspace
+	ds.Name = "dfgkglrketlh"
+	lp = ds
+	local currentcamera = workspace.CurrentCamera
+	currentcamera.CameraSubject = ds.Humanoid
+	local lphum = lp.Humanoid
+	local chum= ds.Humanoid
+	lphum = chum
+end
+function ic.unDesync()
+	local lp = game:GetService("Players").LocalPlayer.Character
+	local ds = workspace.dfgkglrketlh
+	local currentcamera = workspace.CurrentCamera
+	ds:Destroy()
+	currentcamera.CameraSubject = lp.Humanoid
+local hrp = lp.HumanoidRootPart
+	lp.HumanoidRootPart.Anchored = false
+	local lphum = lp.Humanoid
+	local chum= lp.Humanoid
+	chum = lphum
+end
 function ESP()
 for i,v in pairs(game.Players:GetPlayers()) do
 		if v ~= game.Players.LocalPlayer then
@@ -221,6 +252,19 @@ Tab:CreateButton({
 			pcall(function() MainRemote:FireServer("Dogs", ply) end)
 			pcall(function() MainRemote:FireServer("Guards", ply) end)
 		end
+	end,
+})
+
+Tab:CreateButton({
+	Name = "desync",
+	Callback = function()
+		ic.desync()
+	end,
+})
+Tab:CreateButton({
+	Name = "sync",
+	Callback = function()
+		ic.unDesync()
 	end,
 })
 
@@ -561,7 +605,12 @@ local Input = troll:CreateInput({
 
 	end,
 })
-
+troll:CreateButton({
+	Name = "anti sit",
+	Callback = function ()
+		 ic.antisit()
+	end,
+})
 local Input = troll:CreateInput({
 	Name = "bang player",
 	CurrentValue = "",
