@@ -1,4 +1,37 @@
--- i got the bang script from infinite yield so credits to infinite yield
+--[[ 
+i got the bang script from infinite yield so credits to infinite yield
+
+ _                               _   _       _     
+| |   _   _ _ __ ___   __ _     | | | |_   _| |__  
+| |  | | | | '_ ` _ \ / _` |    | |_| | | | | '_ \ 
+| |__| |_| | | | | | | (_| |    |  _  | |_| | |_) |
+|_____\__,_|_| |_| |_|\__,_|    |_| |_|\__,_|_.__/ 
+
+]]
+local rs = game:GetService("RunService")
+function antifall()
+	local player = game.Players.LocalPlayer
+	local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+	if not hrp then
+		warn("HumanoidRootPart not found!")
+		return
+	end
+	local part = Instance.new("Part")
+	part.Anchored = true
+
+	part.Transparency = 1
+	part.Size = Vector3.new(1000000, 1, 100000000)
+	part.CFrame = hrp.CFrame - Vector3.new(0, 10, 0)
+	part.Parent = workspace
+	workspace.FallenPartsDestroyHeight = -math.huge
+end
+function cageopenn()
+	for _, prompt in ipairs(workspace:GetDescendants()) do
+		if prompt:IsA("ProximityPrompt") and string.find(string.lower(prompt.Parent.Name or ""), "cagedoor") then
+			fireproximityprompt(prompt)
+		end
+	end
+end
 local url = "https://p19-comment-sign-sg.tiktokcdn.com/tos-alisg-i-zt8igodiya-sg/df667e20e84643759dd9ca98a21af1ff~tplv-jj85edgx6n-image-medium.jpeg?dr=8569&refresh_token=51c4b55c&x-expires=1781794800&x-signature=suxL1B5DHdAzoSFA7W4Ajkk9dVs%3D&t=67a6c45e&ps=a0626fcd&shp=ff37627b&shcp=ff37627b&idc=my"
 local _, result = pcall(function()
 	writefile("dogpound.png", game:HttpGet(url))
@@ -8,7 +41,7 @@ function ic.antisit()
 local hum = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid")
 	hum:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
 end
-
+game:GetService("GuiService"):SetGameplayPausedNotificationEnabled(false)
 function ic.desync()
 	local  lp = game:GetService("Players").LocalPlayer.Character
 	local ds = lp:Clone()
@@ -34,6 +67,7 @@ local hrp = lp.HumanoidRootPart
 	local chum= lp.Humanoid
 	chum = lphum
 end
+
 function ESP()
 for i,v in pairs(game.Players:GetPlayers()) do
 		if v ~= game.Players.LocalPlayer then
@@ -243,6 +277,23 @@ local Window = Rayfield:CreateWindow({
 		Key = {"Hello"} -- List of keys that the system will accept, can be RAW file links (pastebin, github, etc.) or simple strings ("hello", "key22")
 	}
 })
+function escape()
+	local targetPosition = Vector3.new(-115.9, 3.5, -104.9)
+	
+		local character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+		local hrp = character:WaitForChild("HumanoidRootPart")
+
+		hrp.CFrame = CFrame.new(targetPosition)
+end
+function ic.IY()
+	Rayfield:Notify({
+		Title = "Hold On A Sec..",
+		Content = "Loading infinite yield",
+		Duration = 3.5,
+		Image = 525701437,
+	})
+	loadstring(game:HttpGet("https://raw.githubusercontent.com/EdgeIY/infiniteyield/master/source"))()
+end
 local Tab = Window:CreateTab("some game breakers", 4483362458) -- Title, Image
 Tab:CreateButton({
 	Name = "give guard weapons to all dogs",
@@ -254,7 +305,12 @@ Tab:CreateButton({
 		end
 	end,
 })
-
+Tab:CreateButton({
+	Name = "anti fall",
+	Callback = function()
+		antifall()
+	end,
+})
 Tab:CreateButton({
 	Name = "desync",
 	Callback = function()
@@ -489,6 +545,12 @@ local Slider = Tabcool:CreateSlider({
 		hum.WalkSpeed = Value
 	end,
 })
+Tabcool:CreateButton({
+	Name = "become stray dog",
+	Callback = function ()
+		escape()
+	end,
+})
 local ssssss = Tabcool:CreateSlider({
 	Name = "JumpPower",
 	Range = {0, 100},
@@ -529,6 +591,7 @@ local Inpt = Tab:CreateInput({
 		end
 	end,
 })
+
 local troll = Window:CreateTab("trolling", 4483362458)
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
@@ -611,6 +674,19 @@ troll:CreateButton({
 		 ic.antisit()
 	end,
 })
+troll:CreateButton({
+	Name = "infinite yield",
+	Callback = function ()
+		ic.IY()
+		
+	end,
+})
+troll:CreateButton({
+	Name = "open cages",
+	Callback = function ()
+		cageopenn()
+	end,
+})
 local Input = troll:CreateInput({
 	Name = "bang player",
 	CurrentValue = "",
@@ -642,6 +718,112 @@ local Input = troll:CreateInput({
 
 	end,
 })
+local client = Window:CreateTab("client fun", 4483362458)
+client:CreateButton({
+	Name = "Skyboc (no fe)",
+	Callback = function () 
+		local s = Instance.new("Sky")
+		s.Name = "Sky"
+		s.Parent = game.Lighting
+		s.SkyboxBk = "http://www.roblox.com/asset/?id=12766040080"
+		s.SkyboxDn = "http://www.roblox.com/asset/?id=12766040080"
+		s.SkyboxFt = "http://www.roblox.com/asset/?id=12766040080"
+		s.SkyboxLf = "http://www.roblox.com/asset/?id=12766040080"
+		s.SkyboxRt = "http://www.roblox.com/asset/?id=12766040080"
+		s.SkyboxUp = "http://www.roblox.com/asset/?id=12766040080"
+		game.Lighting.TimeOfDay = 12
+	end,
+})
+client:CreateButton({
+	Name = "hint (No fe)",
+	Callback = function () 
+		local m = Instance.new("Hint", workspace)
+		m.Text = "FUCKED BY LUMA"
+	end,
+})
+client:CreateButton({
+	Name = "hint2 (No fe)",
+	Callback = function () 
+		local m = Instance.new("Hint", workspace)
+		m.Text = "AHAHAAHAHA THIS GAME IS HACKEDDDDDDDD L L  L L L   L L L"
+	end,
+})
+client:CreateButton({
+	Name = "break game (Not fe)",
+	Callback = function () 
+		local m = Instance.new("Hint", workspace)
+		m.Text = "!!!!!!"
+		for i, v in pairs(game.Players:GetChildren()) do
+			emit = Instance.new("ParticleEmitter")
+			emit.Parent = v.Character.Head
+			emit.Texture = "http://www.roblox.com/asset/?id=11875331563"
+			emit.VelocitySpread = 999999
+		end
+		local s = Instance.new("Sky")
+		s.Name = "Sky"
+		s.Parent = game.Lighting
+		s.SkyboxBk = "http://www.roblox.com/asset/?id=12766040080"
+		s.SkyboxDn = "http://www.roblox.com/asset/?id=12766040080"
+		s.SkyboxFt = "http://www.roblox.com/asset/?id=12766040080"
+		s.SkyboxLf = "http://www.roblox.com/asset/?id=12766040080"
+		s.SkyboxRt = "http://www.roblox.com/asset/?id=12766040080"
+		s.SkyboxUp = "http://www.roblox.com/asset/?id=12766040080"
+		game.Lighting.TimeOfDay = 12
+		for i,shit in pairs(workspace:GetDescendants()) do
+			if shit:IsA("BasePart") then
+				local billboard = Instance.new("BillboardGui", shit)
+				local textlabel = Instance.new("TextLabel", billboard)
+				textlabel.Text = "!DOG POUND!!DOG POUND!!DOG POUND!!DOG POUND!!DOG POUND!!DOG POUND!!DOG POUND!!DOG POUND!!DOG POUND!!DOG POUND!!DOG POUND!"
+				
+			end
+		end
+	end,
+})
+client:CreateButton({
+	Name = "decalspam (not fe)",
+	Callback = function () 
+		function click()
+			function exPro(root)
+				for _, v in pairs(root:GetChildren()) do
+					if v:IsA("Decal") and v.Texture ~= "http://www.roblox.com/asset/?id=12037887080" then
+						v.Parent = nil
+					elseif v:IsA("BasePart") then
+						v.Material = "Plastic"
+						v.Transparency = 0
+						local One = Instance.new("Decal", v)
+						local Two = Instance.new("Decal", v)
+						local Three = Instance.new("Decal", v)
+						local Four = Instance.new("Decal", v)
+						local Five = Instance.new("Decal", v)
+						local Six = Instance.new("Decal", v)
+						One.Texture = "http://www.roblox.com/asset/?id=12037887080"
+						Two.Texture = "http://www.roblox.com/asset/?id=12037887080"
+						Three.Texture = "http://www.roblox.com/asset/?id=12037887080"
+						Four.Texture = "http://www.roblox.com/asset/?id=12037887080"
+						Five.Texture = "http://www.roblox.com/asset/?id=12037887080"
+						Six.Texture = "http://www.roblox.com/asset/?id=12037887080"
+						One.Face = "Front"
+						Two.Face = "Back"
+						Three.Face = "Right"
+						Four.Face = "Left"
+						Five.Face = "Top"
+						Six.Face = "Bottom"
+					end
+					exPro(v)
+				end
+			end
+			function asdf(root)
+				for _, v in pairs(root:GetChildren()) do
+					asdf(v)
+				end
+			end
+			exPro(workspace)
+			asdf(workspace)
+		end
+		click()
+	end,
+})
+
 local wenleash = Window:CreateTab("when leashed", 4483362458)
 wenleash:CreateButton({
 	Name = "fling high method",
@@ -667,6 +849,15 @@ wenleash:CreateButton({
 		root:ClearAllChildren()
 	end,
 })
+wenleash:CreateButton({
+	Name = "freeze hrp method",
+	Callback = function ()
+		local player = game:GetService("Players").LocalPlayer
+		local character = player.Character or player.CharacterAdded:Wait()
+		local root = character:WaitForChild("HumanoidRootPart")
+		root.Anchored = true
+	end,
+})
 local BangTab = Window:CreateTab("Bang Settings", dp)
 
 local Slider = BangTab:CreateSlider({
@@ -679,4 +870,22 @@ local Slider = BangTab:CreateSlider({
 	Callback = function(Value)
 		BangSpeed = Value
 	end,
+})
+-- Services
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+
+
+local player = Players.LocalPlayer
+local mouse = player:GetMouse()
+
+if UserInputService.KeyboardEnabled and UserInputService.MouseEnabled then
+	mouse.Icon = dp
+end
+
+Rayfield:Notify({
+	Title = "Lumahub",
+	Content = "Loaded",
+	Duration = 9.4,
+	Image = dp,
 })
